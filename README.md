@@ -1,2 +1,2 @@
 # CSKeFu Sync
-Sync status with GitHub Webhooks, integrate with Feishu, etc.
+DevOps Service, Sync status with GitHub Webhooks, integrate with Feishu, etc.
