@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  sync:
+    image: "cskefu/sync:latest"
+    restart: always
+    environment:
+     - DEBUG=sync*
+    ports:
+     - "${SYNC_PORT:-8201}:8201"
