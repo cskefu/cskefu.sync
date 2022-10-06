@@ -21,10 +21,8 @@ ENV TZ Asia/Shanghai
 COPY app /opt/app
 WORKDIR /opt/app
 
-# version bypass bless
-RUN cd /opt/app && \
-   npm install --production --registry=https://registry.npm.taobao.org
+RUN npm install --production --registry=https://registry.npm.taobao.org
 
-ENTRYPOINT ["/bin/sh"]
+#ENTRYPOINT ["/bin/sh"]
 CMD ["npm", "start"]
 EXPOSE 8201
