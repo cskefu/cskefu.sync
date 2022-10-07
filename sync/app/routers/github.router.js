@@ -8,7 +8,11 @@ const axios = require("axios");
 const Router = require("koa-router");
 const router = new Router();
 
-router.get('/foo', async (ctx, next) => {
+
+/**
+ * Receive GitHub Webhook Events
+ */
+router.get('/webhooks', async (ctx, next) => {
     ctx.body = {
         data: "bar"
     };
