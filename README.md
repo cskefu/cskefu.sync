@@ -1,6 +1,6 @@
 # CSKeFu Sync
 
-DevOps Service, Sync status with GitHub Webhooks, integrate with Feishu, etc.
+One component of DevOps Services, Sync status with GitHub Webhooks, integrate with Feishu, etc.
 
 ## Docker
 
