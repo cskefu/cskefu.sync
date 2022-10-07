@@ -1,0 +1,43 @@
+/**
+ * GitHub Ctrl
+ */
+
+const debug = require("debug")("sync:ctrl:github");
+const utils = require("../utils/index");
+const feishuService = require("../services/feishu.service");
+
+
+
+function Controller() {
+
+}
+
+/**
+ * Handle Github Webhooks
+ * @param {*} headers
+ * @param {*} params
+ * @param {*} body
+ */
+Controller.prototype.handleGitHubWebhooks = async function (headers, params, body) {
+    let ret = { "msg": "done" };
+    let eventType = headers["x-github-event"];
+    debug("[handleGitHubWebhooks] eventType", eventType);
+    utils.writeTmpOutputFileOnDevelopment(body);
+
+    switch(eventType){
+        case 'push':
+            await feishuService.sendPushEventNotification(body);
+            break;
+
+        default:
+            console.log("[handleGitHubWebhooks] unhandled event", eventType);
+    }
+
+
+    debug("[handleGitHubWebhooks] ret", JSON.stringify(ret))
+    return ret;
+}
+
+
+
+exports = module.exports = new Controller();
