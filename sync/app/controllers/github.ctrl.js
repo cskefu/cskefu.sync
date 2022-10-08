@@ -24,11 +24,16 @@ Controller.prototype.handleGitHubWebhooks = async function (headers, params, bod
     debug("[handleGitHubWebhooks] eventType", eventType);
     utils.writeTmpOutputFileOnDevelopment(body);
 
-    switch(eventType){
+    switch (eventType) {
         case 'push':
             await feishuService.sendPushEventNotification(body);
             break;
-
+        case 'issues':
+            await feishuService.sendIssuesEventNotification(body);
+            break;
+        case 'issue_comment':
+            await feishuService.sendIssueCommentEventNotification(body);
+            break;
         default:
             console.log("[handleGitHubWebhooks] unhandled event", eventType);
     }

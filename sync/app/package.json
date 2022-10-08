@@ -27,7 +27,8 @@
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "lodash": "^4.17.21",
-    "moment-timezone": "^0.5.37"
+    "moment-timezone": "^0.5.37",
+    "sanitize-html": "^2.7.2"
   },
   "devDependencies": {
     "ava": "^4.3.3",
