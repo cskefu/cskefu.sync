@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/cskefu/cskefu.sync#readme",
   "dependencies": {
-    "axios": "^1.1.0",
+    "axios": "1.0.0-alpha.1",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "koa": "^2.13.4",
