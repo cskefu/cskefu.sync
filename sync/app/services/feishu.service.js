@@ -9,9 +9,8 @@ const utils = require("../utils/index");
 const moment = require('moment-timezone');
 
 const TZ = 'Asia/Shanghai'
-
-const NOTIFY_FEISHU_GROUPS = process.env["NOTIFY_FEISHU_GROUPS"] ? process.env["NOTIFY_FEISHU_GROUPS"].split(",") : null;
-
+const FEISHU_GROUP_GITHUB_BOTS = process.env["FEISHU_GROUP_GITHUB_BOTS"] ? process.env["FEISHU_GROUP_GITHUB_BOTS"].split(",") : null;
+const FEISHU_GROUP_W3_BOTS = process.env["FEISHU_GROUP_W3_BOTS"] ? process.env["FEISHU_GROUP_W3_BOTS"].split(",") : null;
 
 /**
  * Compose Push Event Content
@@ -58,8 +57,8 @@ async function sendPushEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -81,10 +80,9 @@ async function sendPushEventNotification(payload) {
             debug("[sendPushEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendPushEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendPushEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
-
 
 /**
  * Get Issue lable string
@@ -170,8 +168,8 @@ async function sendIssuesEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -193,7 +191,7 @@ async function sendIssuesEventNotification(payload) {
             debug("[sendIssuesEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendIssuesEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendIssuesEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
 
@@ -242,8 +240,8 @@ async function sendIssueCommentEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -265,7 +263,7 @@ async function sendIssueCommentEventNotification(payload) {
             debug("[sendIssueCommentEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendIssueCommentEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendIssueCommentEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
 
@@ -300,8 +298,8 @@ async function sendForkEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -323,7 +321,7 @@ async function sendForkEventNotification(payload) {
             debug("[sendForkEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendForkEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendForkEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
 
@@ -394,8 +392,8 @@ async function sendPullRequestEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -417,7 +415,7 @@ async function sendPullRequestEventNotification(payload) {
             debug("[sendPullRequestEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendPullRequestEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendPullRequestEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
 
@@ -466,8 +464,8 @@ async function sendMilestoneEventNotification(payload) {
     })
 
 
-    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
-        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+    if (FEISHU_GROUP_GITHUB_BOTS && FEISHU_GROUP_GITHUB_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_GITHUB_BOTS) {
             // Check out payload body for message conent with
             // https://github.com/cskefu/cskefu.sync/issues/2
             let response = await axios.post(notify_feishu_group, {
@@ -489,10 +487,86 @@ async function sendMilestoneEventNotification(payload) {
             debug("[sendMilestoneEventNotification] resp %j", response.data)
         }
     } else {
-        debug("[sendMilestoneEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+        debug("[sendMilestoneEventNotification] No notify group defined with ENV FEISHU_GROUP_GITHUB_BOTS");
     }
 }
 
+/**
+ * 获得 W3 文章标签分类信息
+ * @param {*} payload 
+ */
+function getW3PostCategories(payload){
+    if(payload.categories && payload.categories.length > 0){
+        let ret = [];
+
+        for(let x of payload.categories){
+            ret.push(x.name);
+        }
+
+        return ret.join("_")
+    } else {
+        return "未分类"
+    }
+}
+
+
+/**
+ * Send W3 Post Events into Feishu Groups
+ * @param {*} payload 
+ */
+async function sendW3BroadcastNotification(payload) {
+    debug("[sendW3BroadcastNotification]", JSON.stringify(payload));
+    let elements = [];
+
+    elements.push({
+        "tag": "div",
+        "text": {
+            "content": `**标题** ${payload.post_title}\n**作者** [${payload.display_name}(${payload.user_email})](${payload.user_profile})`,
+            "tag": "lark_md"
+        }
+    })
+
+    elements.push({
+        "actions": [{
+            "tag": "button",
+            "text": {
+                "content": "✅ 阅读原文",
+                "tag": "lark_md"
+            },
+            "url": `${payload.link}`,
+            "type": "default",
+            "value": {}
+        }],
+        "tag": "action"
+    })
+
+
+    if (FEISHU_GROUP_W3_BOTS && FEISHU_GROUP_W3_BOTS.length > 0) {
+        for (let notify_feishu_group of FEISHU_GROUP_W3_BOTS) {
+            // Check out payload body for message conent with
+            // https://github.com/cskefu/cskefu.sync/issues/2
+            let response = await axios.post(notify_feishu_group, {
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true,
+                        "enable_forward": true
+                    },
+                    "elements": elements,
+                    "header": {
+                        "title": {
+                            "content": utils.capitalizeFirstLetter(getW3PostCategories(payload) + " - ") + payload.post_title + " | 春松客服 W3",
+                            "tag": "plain_text"
+                        }
+                    }
+                }
+            });
+            debug("[sendW3BroadcastNotification] resp %j", response.data)
+        }
+    } else {
+        debug("[sendW3BroadcastNotification] No notify group defined with ENV FEISHU_GROUP_W3_BOTS");
+    }
+}
 
 
 exports = module.exports = {
@@ -501,5 +575,6 @@ exports = module.exports = {
     sendIssueCommentEventNotification,
     sendForkEventNotification,
     sendPullRequestEventNotification,
-    sendMilestoneEventNotification
+    sendMilestoneEventNotification,
+    sendW3BroadcastNotification
 }

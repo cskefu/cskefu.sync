@@ -7,6 +7,7 @@ services:
     environment:
      - DEBUG=sync*
      - NODE_ENV=${NODE_ENV:-development}
-     - NOTIFY_FEISHU_GROUPS=${NOTIFY_FEISHU_GROUPS:-placeholder}
+     - FEISHU_GROUP_GITHUB_BOTS=${FEISHU_GROUP_GITHUB_BOTS:-placeholder}
+     - FEISHU_GROUP_W3_BOTS=${FEISHU_GROUP_W3_BOTS:-placeholder}
     ports:
      - "${SYNC_PORT:-8201}:8201"
