@@ -6,7 +6,9 @@ const debug = require("debug")("sync:services:feishu");
 const axios = require("axios").default;
 const _ = require("lodash");
 const utils = require("../utils/index");
-const sanitizeHtml = require('sanitize-html');
+const moment = require('moment-timezone');
+
+const TZ = 'Asia/Shanghai'
 
 const NOTIFY_FEISHU_GROUPS = process.env["NOTIFY_FEISHU_GROUPS"] ? process.env["NOTIFY_FEISHU_GROUPS"].split(",") : null;
 
@@ -129,6 +131,17 @@ async function sendIssuesEventNotification(payload) {
                 }
             })
             break;
+
+        case "milestoned":
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [#${payload.issue.number}  ${payload.issue.title}](${payload.issue.html_url})\n**milestone** [M${payload.milestone.number} ${payload.milestone.title}](${payload.milestone.html_url}) \n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+            break;
+
         case "labeled":
             // bypass labeled events
             return;
@@ -314,10 +327,179 @@ async function sendForkEventNotification(payload) {
     }
 }
 
+/**
+ * send PR Event
+ * @param {*} payload 
+ */
+async function sendPullRequestEventNotification(payload) {
+    debug("[sendPullRequestEventNotification]", JSON.stringify(payload.action));
+    let elements = [];
+
+    switch (payload.action) {
+        case "opened":
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [#${payload.pull_request.number} ${payload.pull_request.title}](${payload.pull_request.html_url}) \n**open** by [${payload.pull_request.user.login}](${payload.pull_request.user.html_url}) \n**labels** ${payload.pull_request.labels.length > 0 ? getIssueLabels(payload.pull_request.labels) : 'N/A'}\n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+            break;
+
+        case "review_requested":
+        case "review_request_removed":
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [#${payload.pull_request.number} ${payload.pull_request.title}](${payload.pull_request.html_url}) \n**reviewer** [${payload.requested_reviewer.login}](${payload.requested_reviewer.html_url}) \n**open** by [${payload.pull_request.user.login}](${payload.pull_request.user.html_url}) \n**labels** ${payload.pull_request.labels.length > 0 ? getIssueLabels(payload.pull_request.labels) : 'N/A'}\n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+            break;
+        case "labeled":
+            // bypass labeled events
+            return;
+
+        case "milestoned":
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [#${payload.pull_request.number}  ${payload.pull_request.title}](${payload.pull_request.html_url})\n**milestone** [M${payload.milestone.number} ${payload.milestone.title}](${payload.milestone.html_url}) \n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+            break;
+        default:
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [#${payload.pull_request.number}  ${payload.pull_request.title}](${payload.pull_request.html_url}) \n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+    }
+
+    elements.push({
+        "actions": [{
+            "tag": "button",
+            "text": {
+                "content": "💻 Open on GitHub",
+                "tag": "lark_md"
+            },
+            "url": `${payload.pull_request.html_url}`,
+            "type": "default",
+            "value": {}
+        }],
+        "tag": "action"
+    })
+
+
+    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
+        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+            // Check out payload body for message conent with
+            // https://github.com/cskefu/cskefu.sync/issues/2
+            let response = await axios.post(notify_feishu_group, {
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true,
+                        "enable_forward": true
+                    },
+                    "elements": elements,
+                    "header": {
+                        "title": {
+                            "content": utils.capitalizeFirstLetter(payload.action) + " pull request " + payload.repository.full_name + ` #${payload.pull_request.number} 💌`,
+                            "tag": "plain_text"
+                        }
+                    }
+                }
+            });
+            debug("[sendPullRequestEventNotification] resp %j", response.data)
+        }
+    } else {
+        debug("[sendPullRequestEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+    }
+}
+
+
+/**
+ * send Milestone Event
+ * @param {*} payload 
+ */
+async function sendMilestoneEventNotification(payload) {
+    debug("[sendMilestoneEventNotification]", JSON.stringify(payload.action));
+    let elements = [];
+
+    switch (payload.action) {
+        case "created":
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [M${payload.milestone.number} ${payload.milestone.title}](${payload.milestone.html_url}) \n**open** by [${payload.milestone.creator.login}](${payload.milestone.creator.html_url}) \n**description** ${payload.milestone.description || 'N/A'}\n**due on** ${moment.utc(payload.milestone.due_on).tz(TZ).format('YYYY-MM-DD')}`,
+                    "tag": "lark_md"
+                }
+            })
+            break;
+
+        default:
+            elements.push({
+                "tag": "div",
+                "text": {
+                    "content": `**${payload.action}** [M${payload.milestone.number}  ${payload.milestone.title}](${payload.milestone.html_url}) \n**sender** [${payload.sender.login}](${payload.sender.html_url})`,
+                    "tag": "lark_md"
+                }
+            })
+    }
+
+    elements.push({
+        "actions": [{
+            "tag": "button",
+            "text": {
+                "content": "🎡 Open on GitHub",
+                "tag": "lark_md"
+            },
+            "url": `${payload.milestone.html_url}`,
+            "type": "default",
+            "value": {}
+        }],
+        "tag": "action"
+    })
+
+
+    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
+        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+            // Check out payload body for message conent with
+            // https://github.com/cskefu/cskefu.sync/issues/2
+            let response = await axios.post(notify_feishu_group, {
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true,
+                        "enable_forward": true
+                    },
+                    "elements": elements,
+                    "header": {
+                        "title": {
+                            "content": utils.capitalizeFirstLetter(payload.action) + " milestone " + payload.repository.full_name + ` M${payload.milestone.number} ${payload.milestone.title}💌`,
+                            "tag": "plain_text"
+                        }
+                    }
+                }
+            });
+            debug("[sendMilestoneEventNotification] resp %j", response.data)
+        }
+    } else {
+        debug("[sendMilestoneEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+    }
+}
+
+
 
 exports = module.exports = {
     sendPushEventNotification,
     sendIssuesEventNotification,
     sendIssueCommentEventNotification,
-    sendForkEventNotification
+    sendForkEventNotification,
+    sendPullRequestEventNotification,
+    sendMilestoneEventNotification
 }
