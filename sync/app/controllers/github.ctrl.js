@@ -34,6 +34,9 @@ Controller.prototype.handleGitHubWebhooks = async function (headers, params, bod
         case 'issue_comment':
             await feishuService.sendIssueCommentEventNotification(body);
             break;
+        case 'fork':
+            await feishuService.sendForkEventNotification(body);
+            break;
         default:
             console.log("[handleGitHubWebhooks] unhandled event", eventType);
     }

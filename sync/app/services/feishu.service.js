@@ -256,10 +256,68 @@ async function sendIssueCommentEventNotification(payload) {
     }
 }
 
+/**
+ * send Issues Event
+ * @param {*} payload 
+ */
+async function sendForkEventNotification(payload) {
+    debug("[sendForkEventNotification]", JSON.stringify(payload.forkee));
+    let elements = [];
+
+    elements.push({
+        "tag": "div",
+        "text": {
+            "content": `**forkee** [${payload.forkee.owner.login}](${payload.forkee.owner.html_url})\n**forked** [${payload.forkee.full_name}](${payload.forkee.html_url})`,
+            "tag": "lark_md"
+        }
+    })
+
+    elements.push({
+        "actions": [{
+            "tag": "button",
+            "text": {
+                "content": "🍕 Open on GitHub",
+                "tag": "lark_md"
+            },
+            "url": `${payload.forkee.html_url}`,
+            "type": "default",
+            "value": {}
+        }],
+        "tag": "action"
+    })
+
+
+    if (NOTIFY_FEISHU_GROUPS && NOTIFY_FEISHU_GROUPS.length > 0) {
+        for (let notify_feishu_group of NOTIFY_FEISHU_GROUPS) {
+            // Check out payload body for message conent with
+            // https://github.com/cskefu/cskefu.sync/issues/2
+            let response = await axios.post(notify_feishu_group, {
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true,
+                        "enable_forward": true
+                    },
+                    "elements": elements,
+                    "header": {
+                        "title": {
+                            "content": utils.capitalizeFirstLetter("forked ") + payload.repository.full_name,
+                            "tag": "plain_text"
+                        }
+                    }
+                }
+            });
+            debug("[sendForkEventNotification] resp %j", response.data)
+        }
+    } else {
+        debug("[sendForkEventNotification] No notify group defined with ENV NOTIFY_FEISHU_GROUPS");
+    }
+}
 
 
 exports = module.exports = {
     sendPushEventNotification,
     sendIssuesEventNotification,
-    sendIssueCommentEventNotification
+    sendIssueCommentEventNotification,
+    sendForkEventNotification
 }
