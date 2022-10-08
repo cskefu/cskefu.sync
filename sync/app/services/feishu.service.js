@@ -492,25 +492,6 @@ async function sendMilestoneEventNotification(payload) {
 }
 
 /**
- * 获得 W3 文章标签分类信息
- * @param {*} payload 
- */
-function getW3PostCategories(payload){
-    if(payload.categories && payload.categories.length > 0){
-        let ret = [];
-
-        for(let x of payload.categories){
-            ret.push(x.name);
-        }
-
-        return ret.join("_")
-    } else {
-        return "未分类"
-    }
-}
-
-
-/**
  * Send W3 Post Events into Feishu Groups
  * @param {*} payload 
  */
@@ -521,7 +502,7 @@ async function sendW3BroadcastNotification(payload) {
     elements.push({
         "tag": "div",
         "text": {
-            "content": `**标题** ${payload.post_title}\n**作者** [${payload.display_name}(${payload.user_email})](${payload.user_profile})`,
+            "content": `**标题** ${payload.post_title}\n**作者** [${payload.display_name}(${payload.user_email})](${payload.user_profile})\n**正文**\n ${payload.content.substring(0, 60)}...`,
             "tag": "lark_md"
         }
     })
@@ -555,7 +536,7 @@ async function sendW3BroadcastNotification(payload) {
                     "elements": elements,
                     "header": {
                         "title": {
-                            "content": utils.capitalizeFirstLetter(getW3PostCategories(payload) + " - ") + payload.post_title + " | 春松客服 W3",
+                            "content": utils.capitalizeFirstLetter(utils.getW3PostCategories(payload) + " - ") + payload.post_title + " | 春松客服 W3",
                             "tag": "plain_text"
                         }
                     }

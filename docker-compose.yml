@@ -9,5 +9,16 @@ services:
      - NODE_ENV=${NODE_ENV:-development}
      - FEISHU_GROUP_GITHUB_BOTS=${FEISHU_GROUP_GITHUB_BOTS:-placeholder}
      - FEISHU_GROUP_W3_BOTS=${FEISHU_GROUP_W3_BOTS:-placeholder}
+     - MAIL_W3_EVENTS_CC=${MAIL_W3_EVENTS_CC:-placeholder}
+     - MAIL_W3_EVENTS_BCC=${MAIL_W3_EVENTS_BCC:-placeholder}
+     - SMTP_HOST=smtp.feishu.cn
+     - SMTP_PORT=465
+     - SMTP_SSL=true
+     - SMTP_USER_FROM=${SMTP_USER_FROM:-placeholder}
+     - SMTP_USER_NAME="CSKeFu W3"
+     - SMTP_USER_PASS=${SMTP_USER_PASS:-placeholder}
     ports:
      - "${SYNC_PORT:-8201}:8201"
+
+
+

@@ -16,7 +16,7 @@
      let body = ctx.request.body;
      debug("/broadcast headers", JSON.stringify(ctx.request.headers, null, 2))
      debug("/broadcast", "ctx.params", JSON.stringify(ctx.params), ", body\n", JSON.stringify(body, null, 2));
- 
+
      ctx.body = await w3Ctrl.handleW3broadcast(ctx.request.headers, ctx.params, body);
  
      await next();
