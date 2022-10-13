@@ -8,6 +8,7 @@ const cors = require('koa2-cors');
 const port = process.env["NODE_PORT"] || 8201;
 const bodyParser = require('koa-bodyparser');
 const router = require("./routers/index");
+const debug = require("debug")("sync:app");
 
 app.use(
     cors({
@@ -48,9 +49,10 @@ const httpServer = app.listen(port, function () {
     console.log(`
     ${figlet}
 =============== Powered by CSKeFu ============
---- https://github.com/cskefu/cskefu.sync ----
+--- https://github.com/cskefu/sync ----
 Deliver Contact Center in Cloud and OpenSource Era.
 ___________________________________________________
 `);
     console.log('Server listening on port', port);
+    debug("https://www.cskefu.com");
 });
